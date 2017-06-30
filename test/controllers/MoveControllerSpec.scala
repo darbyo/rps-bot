@@ -3,8 +3,11 @@ package controllers
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.libs.json.Json
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
+
+import scala.concurrent.Future
 
 class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest {
 
