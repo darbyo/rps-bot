@@ -1,6 +1,8 @@
 .g8
 logs
 target
+/.ensime
+/.ensime_cache
 /.idea
 /.idea_modules
 /.classpath
