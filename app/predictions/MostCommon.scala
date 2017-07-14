@@ -3,18 +3,21 @@ package predictions
 object MostCommon {
 
   def predict(items: List[String]) = {
-    if (items.filter(_ == "PAPER").size >= items.size / 2f) {
+    val papers = items.count(_ == "PAPER")
+    val rocks = items.count(_ == "ROCK")
+    val scissors = items.count(_ == "SCISSORS")
+    val dynamite = items.count(_ == "DYNAMITE")
+
+    if (dynamite > scissors && dynamite > papers && dynamite > rocks){
+      "WATERBOMB"
+    } else if (papers > rocks && papers > scissors) {
       "SCISSORS"
-    } else if(items.filter(_ == "SCISSORS").size >= items.size / 2f) {
+    } else if(scissors > rocks && scissors > papers) {
       "ROCK"
-    } else if (items.filter(_ == "ROCK").size > 1) {
+    } else if (rocks > papers && rocks > scissors) {
       "PAPER"
     } else {
-      items.reverse.head match {
-        case "PAPER" => "SCISSORS"
-        case "ROCK" => "PAPER"
-        case "SCISSORS" => "ROCK"
-      }
+      "DYNAMITE"
     }
   }
 }
