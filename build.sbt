@@ -9,6 +9,7 @@ scalaVersion := "2.11.11"
 
 libraryDependencies += filters
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % Test
+libraryDependencies += "org.mockito" % "mockito-all" % "1.8.4" % "test"
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.example.controllers._"

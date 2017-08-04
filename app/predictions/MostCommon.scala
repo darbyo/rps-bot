@@ -1,7 +1,6 @@
 package predictions
 
 object MostCommon {
-
   def predict(items: List[String]) = {
     val papers = items.count(_ == "PAPER")
     val rocks = items.count(_ == "ROCK")
