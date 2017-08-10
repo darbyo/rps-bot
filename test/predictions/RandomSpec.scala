@@ -1,3 +1,5 @@
+package predictions
+
 import org.scalatest.WordSpec
 import org.scalatest.Matchers._
 import org.mockito.Mockito._
