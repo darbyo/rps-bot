@@ -1,5 +1,6 @@
 package guesstimater
 
+import models.Move
 import utils.RandomNumberGenerator
 
 
@@ -10,13 +11,13 @@ trait Random {
     val random = randomNumberGenerator.Next(1, 17)
 
     if(random <= 5) {
-      "ROCK"
+      Move.ROCK
     } else if (random <= 10) {
-      "PAPER"
+      Move.PAPER
     } else if (random <= 15) {
-      "SCISSORS"
+      Move.SCISSORS
     } else {
-      "DYNAMITE"
+      Move.DYNAMITE
     }
   }
 }

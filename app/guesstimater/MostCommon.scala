@@ -1,22 +1,25 @@
 package guesstimater
 
+import models.Move
+import models.Move.Move
+
 object MostCommon {
-  def predict(items: List[String]) = {
-    val papers = items.count(_ == "PAPER")
-    val rocks = items.count(_ == "ROCK")
-    val scissors = items.count(_ == "SCISSORS")
-    val dynamite = items.count(_ == "DYNAMITE")
+  def predict(items: List[Move]) = {
+    val papers = items.count(_ == Move.PAPER)
+    val rocks = items.count(_ == Move.ROCK)
+    val scissors = items.count(_ == Move.SCISSORS)
+    val dynamite = items.count(_ == Move.DYNAMITE)
 
     if (dynamite > scissors && dynamite > papers && dynamite > rocks){
-      "WATERBOMB"
+      Move.WATERBOMB
     } else if (papers > rocks && papers > scissors) {
-      "SCISSORS"
+      Move.SCISSORS
     } else if(scissors > rocks && scissors > papers) {
-      "ROCK"
+      Move.ROCK
     } else if (rocks > papers && rocks > scissors) {
-      "PAPER"
+      Move.PAPER
     } else {
-      "DYNAMITE"
+      Move.DYNAMITE
     }
   }
 }
