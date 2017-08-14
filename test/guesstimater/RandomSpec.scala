@@ -1,4 +1,4 @@
-package predictions
+package guesstimater
 
 import org.scalatest.WordSpec
 import org.scalatest.Matchers._
@@ -10,7 +10,7 @@ import utils.RandomNumberGenerator
 class RandomSpec extends WordSpec with MockitoSugar {
   val mockRandomNumberGenerator = mock[RandomNumberGenerator]
 
-  def buildObject = new predictions.Random {
+  def buildObject = new guesstimater.Random {
     val randomNumberGenerator = mockRandomNumberGenerator
   }
 

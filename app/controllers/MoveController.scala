@@ -2,7 +2,6 @@ package controllers
 
 import javax.inject.Inject
 
-import models.Move
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import services.GameStateService

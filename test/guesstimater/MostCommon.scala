@@ -1,4 +1,4 @@
-package predictions
+package guesstimater
 
 import org.scalatest.WordSpec
 import org.scalatest.Matchers._

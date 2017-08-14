@@ -8,7 +8,8 @@ case class GameState(
   maxRounds: Int,
   dynamiteCount: Int,
   round: Int = 1,
-  plays: Seq[Play] = Nil
+  plays: Seq[Play] = Nil,
+  currentGuesstimater: Int = 0
 )
 
 object GameState {

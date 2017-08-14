@@ -1,4 +1,4 @@
-package predictions
+package guesstimater
 
 import models.{Move, Play, Result}
 import org.scalatest.Matchers._

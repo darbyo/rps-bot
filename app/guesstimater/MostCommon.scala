@@ -1,4 +1,4 @@
-package predictions
+package guesstimater
 
 object MostCommon {
   def predict(items: List[String]) = {

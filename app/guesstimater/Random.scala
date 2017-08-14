@@ -1,4 +1,4 @@
-package predictions
+package guesstimater
 
 import utils.RandomNumberGenerator
 
