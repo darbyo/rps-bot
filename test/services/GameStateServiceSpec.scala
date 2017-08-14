@@ -1,6 +1,6 @@
 package services
 
-import models.{GameState, Move, Play}
+import models.{GameState, Move, Play, Result}
 import org.mockito.Matchers._
 import org.mockito.Matchers.{eq => meq}
 import org.mockito.Mockito._
@@ -21,21 +21,21 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
 
   "saveState" should {
     "persist state to cache with game-state key" in {
-      val gameState = new GameState("", 0, 0, 0)
+      val gameState = GameState("", 0, 0, 0)
       serviceUnderTest.saveState(gameState)
 
       verify(mockCacheApi, times(1)).set(meq(GameState.key), any(), any())
     }
 
     "persist game state to cache" in {
-      val gameState = new GameState("opponent 1", 0 , 0, 0)
+      val gameState = GameState("opponent 1", 0 , 0, 0)
       serviceUnderTest.saveState(gameState)
 
       verify(mockCacheApi, times(1)).set(any(), meq(gameState), any())
     }
 
     "persist game state with list of plays" in {
-      val gameState = new GameState("opponent 2", 1, 1, 1, 1, Seq(Play(Move.ROCK)))
+      val gameState = GameState("opponent 2", 1, 1, 1, 1, Seq(Play(Move.ROCK)))
       serviceUnderTest.saveState(gameState)
 
       verify(mockCacheApi, times(1)).set(any(), meq(gameState), any())
@@ -45,7 +45,7 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
   "getState" should {
     "return game state from cache" when {
       "game state exists in cache" in {
-        val gameState = new GameState("opponent 1", 0, 0, 0)
+        val gameState = GameState("opponent 1", 0, 0, 0)
         when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
 
         val result = serviceUnderTest.getState()
@@ -53,7 +53,7 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
       }
 
       "game state has list of plays" in {
-        val gameState = new GameState("opponent 2", 1, 1, 1, 1, Seq(Play(Move.ROCK)))
+        val gameState = GameState("opponent 2", 1, 1, 1, 1, Seq(Play(Move.ROCK)))
         when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
 
         val result = serviceUnderTest.getState()
@@ -71,6 +71,40 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
 
         result.getMessage shouldBe "Game state not in cache"
       }
+    }
+  }
+
+  "addOurMove" should {
+    "add move to game state - test 1" in {
+      val gameState = GameState("opponent 1", 500, 1000, 100, 1)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      serviceUnderTest.addOurMove(Move.ROCK)
+      val expectedState = gameState.copy(plays = List(Play(Move.ROCK)))
+
+      verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(expectedState), any())
+    }
+
+    "add move to game state - test 2" in {
+      val gameState = GameState("ABC123", 100, 200, 10, 2)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      serviceUnderTest.addOurMove(Move.PAPER)
+      val expectedState = gameState.copy(plays = List(Play(Move.PAPER)))
+
+      verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(expectedState), any())
+    }
+
+    "append move to list - 1" in {
+      val currentPlay = Play(Move.PAPER, Some(Move.ROCK), Some(Result.WIN))
+      val gameState = GameState("opponent 1", 500, 1000, 100, 1, List(currentPlay))
+
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      serviceUnderTest.addOurMove(Move.ROCK)
+      val expectedState = gameState.copy(plays = List(currentPlay, Play(Move.ROCK)))
+
+      verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(expectedState), any())
     }
   }
 }
