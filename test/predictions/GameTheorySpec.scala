@@ -48,6 +48,7 @@ class GameTheorySpec extends WordSpec {
         result shouldBe Move.PAPER
       }
     }
+
     "return waterbomb" when {
       "previous play lost against dynamite" in {
         val lastPlay = new Play(Move.ROCK, Some(Move.DYNAMITE), Some(Result.LOSE))
