@@ -1,7 +1,7 @@
 package services
 
 import com.google.inject.{ImplementedBy, Inject}
-import models.{GameState, Move, Play, Result}
+import models.{GameState, Play, Result}
 import models.Move.Move
 import play.api.cache.CacheApi
 
@@ -12,6 +12,7 @@ trait GameStateService {
   def getState(): GameState
 
   def addOurMove(move: Move): Unit
+  def addOpponentMove(move: Move): Unit
 }
 
 class CacheGameStateService @Inject() (cacheApi: CacheApi) extends GameStateService {
@@ -24,5 +25,19 @@ class CacheGameStateService @Inject() (cacheApi: CacheApi) extends GameStateServ
   def addOurMove(move: Move): Unit = {
     val state = getState()
     saveState(state.copy(plays = state.plays :+ Play(move)))
+  }
+
+  def addOpponentMove(move: Move): Unit = {
+    val state = getState()
+    val lastPlay = state.plays.last
+
+    if (lastPlay.opponentMove.isDefined || lastPlay.result.isDefined)
+      throw new NoSuchElementException("Unable to find last play")
+
+    val newPlay = Play(lastPlay.ourMove, Some(move), Some(Result.fromPlay(lastPlay.ourMove, move)))
+    val round = state.round + 1
+    val newState = state.copy(round = round, plays = state.plays.init :+ newPlay)
+
+    saveState(newState)
   }
 }
