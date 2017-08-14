@@ -3,7 +3,7 @@ package guesstimater
 import models.Move
 import models.Move.Move
 
-object MostCommon {
+trait MostCommon {
   def predict(items: List[Move]) = {
     val papers = items.count(_ == Move.PAPER)
     val rocks = items.count(_ == Move.ROCK)
