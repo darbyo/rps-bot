@@ -2,7 +2,6 @@ package controllers
 
 import javax.inject.Inject
 
-import models.GameState
 import play.api.mvc.{Action, Controller}
 import services.GameStateService
 import viewmodels.GameStateViewModel
