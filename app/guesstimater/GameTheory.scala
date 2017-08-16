@@ -12,7 +12,7 @@ trait GameTheory {
       } else if (play.opponentMove == Some(Move.DYNAMITE)) {
         Move.WATERBOMB
       } else Move.ROCK
-  } else {
+    } else {
       if(play.ourMove == (Move.PAPER)) {
         Move.ROCK
       }
