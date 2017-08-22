@@ -1,17 +1,31 @@
 package services
 
+import guesstimater.Guesstimater
+import models.Move.Move
 import models.Result.Result
 import models.{GameState, Move, Play, Result}
-import org.mockito.Matchers.{eq=>meq}
+import org.mockito.Matchers.{eq => meq}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import org.scalatest.Matchers._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, WordSpec}
+
 
 class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfterEach {
   val mockGameStateService = mock[GameStateService]
 
-  def serviceUnderTest = new CacheGuesstimaterService(mockGameStateService)
+  val fakeRockGuesstimater = new Guesstimater { def getGuess: Move = Move.ROCK }
+  val fakePaperGuesstimater = new Guesstimater { def getGuess: Move = Move.PAPER }
+  val fakeScissorsGuesstimater = new Guesstimater { def getGuess: Move = Move.SCISSORS }
+
+  def serviceUnderTest = new CacheGuesstimaterService(mockGameStateService) {
+    override val guesstimaters = Seq(
+      fakeRockGuesstimater,
+      fakePaperGuesstimater,
+      fakeScissorsGuesstimater
+    )
+  }
 
   def getGameState(current: Int, lastUpdated: Int, round: Int, plays: Seq[Play]): GameState =
     GameState("", 1000, 2000, 100,
@@ -196,6 +210,38 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
         serviceUnderTest.updateCurrentGuesstimater()
 
         verify(mockGameStateService, never).setCurrentGuesstimater(any())
+      }
+    }
+  }
+
+  "getCurrentGuesstimater" should {
+    "return fakeRockGuesstimater" when {
+      "currentGuesstimater is 0" in {
+        val gameState = getGameState(0, 1, 0, Nil)
+
+        val result = serviceUnderTest.getCurrentGuesstimater(gameState)
+
+        result shouldBe fakeRockGuesstimater
+      }
+    }
+
+    "return fakePaperGuesstimater" when {
+      "currentGuesstimater is 1" in {
+        val gameState = getGameState(1, 1, 0, Nil)
+
+        val result = serviceUnderTest.getCurrentGuesstimater(gameState)
+
+        result shouldBe fakePaperGuesstimater
+      }
+    }
+
+    "return fakeScissorsGuesstimater" when {
+      "currentGuesstimater is 5" in {
+        val gameState = getGameState(5, 1, 0, Nil)
+
+        val result = serviceUnderTest.getCurrentGuesstimater(gameState)
+
+        result shouldBe fakeScissorsGuesstimater
       }
     }
   }
