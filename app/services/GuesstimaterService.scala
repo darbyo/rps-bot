@@ -1,14 +1,20 @@
 package services
 
 import com.google.inject.{ImplementedBy, Inject}
-import models.{GameState, Result}
+import guesstimater.Guesstimater
+import models.{GameState, Move, Result}
 
 @ImplementedBy(classOf[CacheGuesstimaterService])
 trait GuesstimaterService {
+  val guesstimaters: Seq[Guesstimater]
+
   def updateCurrentGuesstimater(): Unit
+  def getCurrentGuesstimater(gameState: GameState): Guesstimater
 }
 
 class CacheGuesstimaterService @Inject() (gameStateService: GameStateService) extends GuesstimaterService {
+  val guesstimaters: Seq[Guesstimater] = Nil
+
   def updateCurrentGuesstimater(): Unit = {
     val gameState = gameStateService.getState()
 
@@ -16,6 +22,9 @@ class CacheGuesstimaterService @Inject() (gameStateService: GameStateService) ex
     checkForLosingMost(gameState)
     checkForDraws(gameState)
   }
+
+  def getCurrentGuesstimater(gameState: GameState) =
+    guesstimaters(gameState.currentGuesstimater % guesstimaters.length)
 
   private def checkForLosingAll(gameState: GameState) = if(lostN(gameState, 5) == 5) updateState(gameState)
   private def checkForLosingMost(gameState: GameState) = if(lostN(gameState, 10) == 6) updateState(gameState)
