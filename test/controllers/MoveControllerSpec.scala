@@ -31,7 +31,7 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
   "Move controller" must {
     "return 200 for a GET" in {
       when(mockGuesstimaterService.getGuess).thenReturn(Move.ROCK)
-      
+
       val request = FakeRequest()
       val result = call(controller.move(), request)
 
