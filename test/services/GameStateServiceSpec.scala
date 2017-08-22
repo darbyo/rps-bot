@@ -158,4 +158,48 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
       }
     }
   }
+
+  "setCurrentGuesstimater" should {
+    "set currentGuesstimater value to 1" in {
+      val gameState = GameState("opponent 1", 500, 1000, 100)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      serviceUnderTest.setCurrentGuesstimater(1)
+
+      val newGameState = gameState.copy(currentGuesstimater = 1)
+      verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(newGameState), any())
+    }
+
+    "set currentGuesstimater value to 2" in {
+      val gameState = GameState("opponent 1", 500, 1000, 100)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      serviceUnderTest.setCurrentGuesstimater(2)
+
+      val newGameState = gameState.copy(currentGuesstimater = 2)
+      verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(newGameState), any())
+    }
+  }
+
+  "setLastUpdateGuesstimater" should {
+    "set lastUpdateGuesstimater value to 1" in {
+      val gameState = GameState("opponent 1", 500, 1000, 100)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      serviceUnderTest.setLastUpdateGuesstimater(1)
+
+      val newGameState = gameState.copy(lastUpdateGuesstimater = 1)
+      verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(newGameState), any())
+    }
+
+    "set lastUpdateGuesstimater value to 2" in {
+      val gameState = GameState("opponent 1", 500, 1000, 100)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      serviceUnderTest.setLastUpdateGuesstimater(2)
+
+      val newGameState = gameState.copy(lastUpdateGuesstimater = 2)
+      verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(newGameState), any())
+    }
+  }
 }

@@ -13,6 +13,9 @@ trait GameStateService {
 
   def addOurMove(move: Move): Unit
   def addOpponentMove(move: Move): Unit
+
+  def setCurrentGuesstimater(n: Int): Unit
+  def setLastUpdateGuesstimater(n: Int): Unit
 }
 
 class CacheGameStateService @Inject() (cacheApi: CacheApi) extends GameStateService {
@@ -39,5 +42,17 @@ class CacheGameStateService @Inject() (cacheApi: CacheApi) extends GameStateServ
     val newState = state.copy(round = round, plays = state.plays.init :+ newPlay)
 
     saveState(newState)
+  }
+
+  def setCurrentGuesstimater(n: Int): Unit = {
+    val gameState = getState()
+    val newGameState = gameState.copy(currentGuesstimater = n)
+    saveState(newGameState)
+  }
+
+  def setLastUpdateGuesstimater(n: Int): Unit = {
+    val gameState = getState()
+    val newGameState = gameState.copy(lastUpdateGuesstimater = n)
+    saveState(newGameState)
   }
 }

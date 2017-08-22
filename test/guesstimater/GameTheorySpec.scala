@@ -2,7 +2,6 @@ package guesstimater
 
 import models.{Move, Play, Result}
 import org.mockito.Mockito._
-import org.mockito.Matchers._
 import org.scalatest.Matchers._
 import org.scalatest.{BeforeAndAfterEach, WordSpec}
 import org.scalatest.mockito.MockitoSugar
@@ -77,23 +76,24 @@ class GameTheorySpec extends WordSpec with MockitoSugar with BeforeAndAfterEach 
     }
 
     "return random" when {
-      "draw" in {
+      "draw with ROCK" in {
         when(mockRandom.predict).thenReturn(Move.ROCK)
         val  lastPlay = new Play(Move.SCISSORS, Some(Move.SCISSORS), Some(Result.DRAW))
         val result = objectUnderTest.predict(lastPlay)
 
         result shouldBe Move.ROCK
       }
+
+      "draw with PAPER" in {
+        when(mockRandom.predict).thenReturn(Move.SCISSORS)
+        val lastPlay = new Play(Move.PAPER, Some(Move.PAPER), Some(Result.DRAW))
+        val result = objectUnderTest.predict(lastPlay)
+
+        result shouldBe Move.SCISSORS
+      }
     }
 
-    "draw with PAPER" in {
-      when(mockRandom.predict).thenReturn(Move.SCISSORS)
-      val lastPlay = new Play(Move.PAPER, Some(Move.PAPER), Some(Result.DRAW))
-      val result = objectUnderTest.predict(lastPlay)
-
-      result shouldBe Move.SCISSORS
-    }
-    "Return dynamite" when {
+    "return dynamite" when {
       "previous play won with waterbomb" in {
         val lastPlay = new Play(Move.WATERBOMB, Some(Move.DYNAMITE), Some(Result.WIN))
         val result = objectUnderTest.predict(lastPlay)

@@ -9,7 +9,8 @@ case class GameState(
   dynamiteCount: Int,
   round: Int = 1,
   plays: Seq[Play] = Nil,
-  currentGuesstimater: Int = 0
+  currentGuesstimater: Int = 0,
+  lastUpdateGuesstimater: Int = 1
 )
 
 object GameState {
