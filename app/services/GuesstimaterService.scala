@@ -2,6 +2,7 @@ package services
 
 import com.google.inject.{ImplementedBy, Inject}
 import guesstimater.Guesstimater
+import models.Move.Move
 import models.{GameState, Move, Result}
 
 @ImplementedBy(classOf[CacheGuesstimaterService])
@@ -10,6 +11,7 @@ trait GuesstimaterService {
 
   def updateCurrentGuesstimater(): Unit
   def getCurrentGuesstimater(gameState: GameState): Guesstimater
+  def getGuess: Move
 }
 
 class CacheGuesstimaterService @Inject() (gameStateService: GameStateService) extends GuesstimaterService {
@@ -25,6 +27,8 @@ class CacheGuesstimaterService @Inject() (gameStateService: GameStateService) ex
 
   def getCurrentGuesstimater(gameState: GameState) =
     guesstimaters(gameState.currentGuesstimater % guesstimaters.length)
+
+  def getGuess: Move = getCurrentGuesstimater(gameStateService.getState()).getGuess
 
   private def checkForLosingAll(gameState: GameState) = if(lostN(gameState, 5) == 5) updateState(gameState)
   private def checkForLosingMost(gameState: GameState) = if(lostN(gameState, 10) == 6) updateState(gameState)

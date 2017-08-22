@@ -13,21 +13,25 @@ import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.GameStateService
+import services.{GameStateService, GuesstimaterService}
 
 class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSugar with BeforeAndAfterEach {
   implicit val actorSystem = ActorSystem()
   implicit val actorMaterializer: akka.stream.Materializer = ActorMaterializer()
 
   val mockGameStateService = mock[GameStateService]
-  def controller = new MoveController(mockGameStateService)
+  val mockGuesstimaterService = mock[GuesstimaterService]
+  def controller = new MoveController(mockGameStateService, mockGuesstimaterService)
 
   override def beforeEach = {
     reset(mockGameStateService)
+    reset(mockGuesstimaterService)
   }
 
   "Move controller" must {
     "return 200 for a GET" in {
+      when(mockGuesstimaterService.getGuess).thenReturn(Move.ROCK)
+      
       val request = FakeRequest()
       val result = call(controller.move(), request)
 
@@ -35,11 +39,23 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
     }
 
     """return "ROCK" as JSON for a GET""" in {
+      when(mockGuesstimaterService.getGuess).thenReturn(Move.ROCK)
+
       val request = FakeRequest()
       val result = call(controller.move(), request)
 
       contentType(result) mustBe Some("application/json")
       contentAsString(result) mustBe """"ROCK""""
+    }
+
+    """return "PAPER" as JSON for a GET""" in {
+      when(mockGuesstimaterService.getGuess).thenReturn(Move.PAPER)
+
+      val request = FakeRequest()
+      val result = call(controller.move(), request)
+
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) mustBe """"PAPER""""
     }
   }
 
@@ -97,6 +113,15 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
       val result = call(controller.lastOpponentMove(), request)
 
       status(result) mustBe BAD_REQUEST
+    }
+
+    "call updateCurrentGuesstimater" in {
+      val json = """{"lastOpponentMove": "PAPER"}"""
+      val request = FakeRequest().withJsonBody(Json.parse(json))
+
+      await(call(controller.lastOpponentMove(), request))
+
+      verify(mockGuesstimaterService, times(1)).updateCurrentGuesstimater()
     }
   }
 }
