@@ -1,11 +1,22 @@
 package guesstimater
 
 import models.{Move, Play, Result}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.Matchers._
-import org.scalatest.WordSpec
+import org.scalatest.{BeforeAndAfterEach, WordSpec}
+import org.scalatest.mockito.MockitoSugar
 
-class GameTheoryDefenceSpec extends WordSpec {
-  def objectUnderTest = new GameTheoryDefence {}
+class GameTheoryDefenceSpec extends WordSpec with MockitoSugar with BeforeAndAfterEach {
+
+  val mockRandom = mock[Random]
+
+  override def beforeEach = {
+    reset(mockRandom)
+  }
+
+  def objectUnderTest = new GameTheoryDefence {
+    val playRandom = mockRandom
+  }
 
   "predict" should {
     "return rock" when {
@@ -50,6 +61,40 @@ class GameTheoryDefenceSpec extends WordSpec {
         val result = objectUnderTest.predict(previousPlay)
 
         result shouldBe Move.WATERBOMB
+      }
+    }
+
+    "return random" when {
+      "previous play was a draw - ROCK" in {
+        when(mockRandom.predict).thenReturn(Move.ROCK)
+        val previousPlay = new Play(Move.PAPER, Some(Move.PAPER), Some(Result.DRAW))
+        val result = objectUnderTest.predict(previousPlay)
+
+        result shouldBe Move.ROCK
+      }
+
+      "previous play was a draw - PAPER" in {
+        when(mockRandom.predict).thenReturn(Move.PAPER)
+        val previousPlay = new Play(Move.PAPER, Some(Move.PAPER), Some(Result.DRAW))
+        val result = objectUnderTest.predict(previousPlay)
+
+        result shouldBe Move.PAPER
+      }
+
+      "previous play was a draw - SCISSORS" in {
+        when(mockRandom.predict).thenReturn(Move.SCISSORS)
+        val previousPlay = new Play(Move.PAPER, Some(Move.PAPER), Some(Result.DRAW))
+        val result = objectUnderTest.predict(previousPlay)
+
+        result shouldBe Move.SCISSORS
+      }
+
+      "previous play was a draw - DYNAMITE" in {
+        when(mockRandom.predict).thenReturn(Move.DYNAMITE)
+        val previousPlay = new Play(Move.PAPER, Some(Move.PAPER), Some(Result.DRAW))
+        val result = objectUnderTest.predict(previousPlay)
+
+        result shouldBe Move.DYNAMITE
       }
     }
   }
