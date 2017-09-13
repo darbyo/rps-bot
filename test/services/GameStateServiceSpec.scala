@@ -13,7 +13,7 @@ import play.api.cache.CacheApi
 class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfterEach {
   val mockCacheApi = mock[CacheApi]
 
-  def serviceUnderTest = new CacheGameStateService(mockCacheApi)
+  def serviceUnderTest = new CGameStateService(mockCacheApi)
 
   override def beforeEach = {
     reset(mockCacheApi)
@@ -35,7 +35,7 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
     }
 
     "persist game state with list of plays" in {
-      val gameState = GameState("opponent 2", 1, 1, 1, 1, Seq(Play(Move.ROCK)))
+      val gameState = GameState("opponent 2", 1, 1, 1, 1, List(Play(Move.ROCK)))
       serviceUnderTest.saveState(gameState)
 
       verify(mockCacheApi, times(1)).set(any(), meq(gameState), any())
@@ -53,7 +53,7 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
       }
 
       "game state has list of plays" in {
-        val gameState = GameState("opponent 2", 1, 1, 1, 1, Seq(Play(Move.ROCK)))
+        val gameState = GameState("opponent 2", 1, 1, 1, 1, List(Play(Move.ROCK)))
         when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
 
         val result = serviceUnderTest.getState()
@@ -102,7 +102,7 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
       when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
 
       serviceUnderTest.addOurMove(Move.ROCK)
-      val expectedState = gameState.copy(plays = List(currentPlay, Play(Move.ROCK)))
+      val expectedState = gameState.copy(plays = List(Play(Move.ROCK), currentPlay))
 
       verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(expectedState), any())
     }
@@ -131,11 +131,11 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
 
     "append new play to plays" in {
       val lastPlay = Play(Move.ROCK, Some(Move.SCISSORS), Some(Result.WIN))
-      val gameState = GameState("ABC123", 50, 100, 10, 4, List(lastPlay, Play(Move.PAPER)))
+      val gameState = GameState("ABC123", 50, 100, 10, 4, List(Play(Move.PAPER), lastPlay))
       when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
 
       serviceUnderTest.addOpponentMove(Move.ROCK)
-      val expectedState = gameState.copy(round = 5, plays = List(lastPlay, Play(Move.PAPER, Some(Move.ROCK), Some(Result.WIN))))
+      val expectedState = gameState.copy(round = 5, plays = List(Play(Move.PAPER, Some(Move.ROCK), Some(Result.WIN)), lastPlay))
 
       verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(expectedState), any())
     }
@@ -200,6 +200,100 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
 
       val newGameState = gameState.copy(lastUpdateGuesstimater = 2)
       verify(mockCacheApi, times(1)).set(meq(GameState.key), meq(newGameState), any())
+    }
+  }
+
+  "getLastPlay" should {
+    "return last play" when {
+      "last play has result and opponent move" in {
+        val expectedPlay = Play(Move.ROCK, Some(Move.PAPER), Some(Result.LOSE))
+        val plays = List(expectedPlay)
+
+        val gameState = GameState("opponent 1", 500, 1000, 100, 1, plays)
+        when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+        val result = serviceUnderTest.getLastPlay()
+        result shouldBe expectedPlay
+      }
+    }
+
+    "return next to last play" when {
+      "opponent move is None" in {
+        val expectedPlay = Play(Move.ROCK, Some(Move.PAPER), Some(Result.LOSE))
+        val plays = List(Play(Move.PAPER, None, Some(Result.WIN)), expectedPlay)
+
+        val gameState = GameState("opponent 1", 500, 1000, 100, 1, plays)
+        when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+        val result = serviceUnderTest.getLastPlay()
+        result shouldBe expectedPlay
+      }
+
+      "result is None" in {
+        val expectedPlay = Play(Move.ROCK, Some(Move.PAPER), Some(Result.LOSE))
+        val plays = List(Play(Move.PAPER, Some(Move.PAPER)), expectedPlay)
+
+        val gameState = GameState("opponent 1", 500, 1000, 100, 1, plays)
+        when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+        val result = serviceUnderTest.getLastPlay()
+        result shouldBe expectedPlay
+      }
+    }
+
+    "throw exception" when {
+      "no items in list" in {
+        val gameState = GameState("opponent 1", 500, 1000, 100, 1, List())
+        when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+        intercept[NoSuchElementException] {
+          serviceUnderTest.getLastPlay()
+        }
+      }
+
+      "opponent move is None" in {
+        val gameState = GameState("opponent 1", 500, 1000, 100, 1, List(Play(Move.PAPER, None, Some(Result.WIN))))
+        when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+        intercept[NoSuchElementException] {
+          serviceUnderTest.getLastPlay()
+        }
+      }
+
+      "result is None" in {
+        val gameState = GameState("opponent 1", 500, 1000, 100, 1, List(Play(Move.PAPER, Some(Move.PAPER))))
+        when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+        intercept[NoSuchElementException] {
+          serviceUnderTest.getLastPlay()
+        }
+      }
+    }
+  }
+
+  "getPlays" should {
+    "return all plays" when {
+      "1 play is in list" in {
+        val plays = List(Play(Move.PAPER))
+
+        val gameState = GameState("opponent 1", 500, 1000, 100, 1, plays)
+        when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+        val result = serviceUnderTest.getPlays()
+
+        result shouldBe plays
+      }
+
+      "2 play are in the list" in {
+        val plays = List(Play(Move.PAPER), Play(Move.ROCK))
+
+        val gameState = GameState("opponent 1", 500, 1000, 100, 1, plays)
+        when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+        val result = serviceUnderTest.getPlays()
+
+        result shouldBe plays
+      }
     }
   }
 }

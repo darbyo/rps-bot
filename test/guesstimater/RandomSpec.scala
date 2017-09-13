@@ -11,8 +11,8 @@ import utils.RandomNumberGenerator
 class RandomSpec extends WordSpec with MockitoSugar {
   val mockRandomNumberGenerator = mock[RandomNumberGenerator]
 
-  def buildObject = new guesstimater.Random {
-    val randomNumberGenerator = mockRandomNumberGenerator
+  def buildObject = new guesstimater.CRandom {
+    override val randomNumberGenerator = mockRandomNumberGenerator
   }
 
   "predict" should {

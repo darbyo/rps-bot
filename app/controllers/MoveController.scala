@@ -25,8 +25,11 @@ class MoveController @Inject() (
         try {
           gameStateService.addOpponentMove(m.lastOpponentMove)
           guesstimaterService.updateCurrentGuesstimater()
+
+          println(gameStateService.getState())
+
           Future.successful(Ok)
-        }catch {
+        } catch {
           case _: NoSuchElementException => Future.successful(BadRequest("Invalid game state"))
         }
       }

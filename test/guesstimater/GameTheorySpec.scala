@@ -5,17 +5,18 @@ import org.mockito.Mockito._
 import org.scalatest.Matchers._
 import org.scalatest.{BeforeAndAfterEach, WordSpec}
 import org.scalatest.mockito.MockitoSugar
+import services.GameStateService
 
 class GameTheorySpec extends WordSpec with MockitoSugar with BeforeAndAfterEach {
+  val mockGameStateService = mock[GameStateService]
   val mockRandom = mock[Random]
 
   override def beforeEach = {
+    reset(mockGameStateService)
     reset(mockRandom)
   }
 
-  def objectUnderTest = new GameTheory {
-    val randomPick = mockRandom
-  }
+  def objectUnderTest = new CGameTheory(mockRandom, mockGameStateService)
 
   "predict" should {
     "return rock" when {
@@ -77,7 +78,7 @@ class GameTheorySpec extends WordSpec with MockitoSugar with BeforeAndAfterEach 
 
     "return random" when {
       "draw with ROCK" in {
-        when(mockRandom.predict).thenReturn(Move.ROCK)
+        when(mockRandom.getGuess).thenReturn(Move.ROCK)
         val  lastPlay = new Play(Move.SCISSORS, Some(Move.SCISSORS), Some(Result.DRAW))
         val result = objectUnderTest.predict(lastPlay)
 
@@ -85,7 +86,7 @@ class GameTheorySpec extends WordSpec with MockitoSugar with BeforeAndAfterEach 
       }
 
       "draw with PAPER" in {
-        when(mockRandom.predict).thenReturn(Move.SCISSORS)
+        when(mockRandom.getGuess).thenReturn(Move.SCISSORS)
         val lastPlay = new Play(Move.PAPER, Some(Move.PAPER), Some(Result.DRAW))
         val result = objectUnderTest.predict(lastPlay)
 

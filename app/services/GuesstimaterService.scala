@@ -5,7 +5,7 @@ import guesstimater.Guesstimater
 import models.Move.Move
 import models.{GameState, Move, Result}
 
-@ImplementedBy(classOf[CacheGuesstimaterService])
+@ImplementedBy(classOf[CGuesstimaterService])
 trait GuesstimaterService {
   val guesstimaters: Seq[Guesstimater]
 
@@ -14,8 +14,8 @@ trait GuesstimaterService {
   def getGuess: Move
 }
 
-class CacheGuesstimaterService @Inject() (gameStateService: GameStateService) extends GuesstimaterService {
-  val guesstimaters: Seq[Guesstimater] = Nil
+class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Guesstimaters) extends GuesstimaterService {
+  val guesstimaters: List[Guesstimater] = gs.get
 
   def updateCurrentGuesstimater(): Unit = {
     val gameState = gameStateService.getState()

@@ -1,11 +1,14 @@
 package guesstimater
 
+import com.google.inject.ImplementedBy
 import models.Move
 import utils.RandomNumberGenerator
 
+@ImplementedBy(classOf[CRandom])
+trait Random extends Guesstimater
 
-trait Random {
-  val randomNumberGenerator: RandomNumberGenerator
+class CRandom extends Random {
+  val randomNumberGenerator: RandomNumberGenerator = RandomNumberGenerator
 
   def predict = {
     val random = randomNumberGenerator.Next(1, 17)
@@ -20,4 +23,6 @@ trait Random {
       Move.DYNAMITE
     }
   }
+
+  def getGuess = predict
 }

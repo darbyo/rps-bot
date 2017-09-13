@@ -14,20 +14,15 @@ import org.scalatest.{BeforeAndAfterEach, WordSpec}
 
 class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfterEach {
   val mockGameStateService = mock[GameStateService]
+  val mockGuesstimaters = mock[Guesstimaters]
 
   val fakeRockGuesstimater = new Guesstimater { def getGuess: Move = Move.ROCK }
   val fakePaperGuesstimater = new Guesstimater { def getGuess: Move = Move.PAPER }
   val fakeScissorsGuesstimater = new Guesstimater { def getGuess: Move = Move.SCISSORS }
 
-  def serviceUnderTest = new CacheGuesstimaterService(mockGameStateService) {
-    override val guesstimaters = Seq(
-      fakeRockGuesstimater,
-      fakePaperGuesstimater,
-      fakeScissorsGuesstimater
-    )
-  }
+  def serviceUnderTest = new CGuesstimaterService(mockGameStateService, mockGuesstimaters)
 
-  def getGameState(current: Int, lastUpdated: Int, round: Int, plays: Seq[Play]): GameState =
+  def getGameState(current: Int, lastUpdated: Int, round: Int, plays: List[Play]): GameState =
     GameState("", 1000, 2000, 100,
       plays = plays,
       currentGuesstimater = current,
@@ -36,13 +31,20 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
     )
 
   def getPlay(result: Result): Play = Play(Move.ROCK, Some(Move.ROCK), Some(result))
-  def getPlays(results: Result*): Seq[Play] = results.map(getPlay)
-  def getPlays(n: Int, result: Result): Seq[Play] = (1 to n).map(_=>getPlay(result))
+  def getPlays(results: Result*): List[Play] = results.map(getPlay).toList
+  def getPlays(n: Int, result: Result): List[Play] = (1 to n).map(_=>getPlay(result)).toList
   def getWins(n: Int) = getPlays(n, Result.WIN)
   def getLosses(n: Int) = getPlays(n, Result.LOSE)
 
   override def beforeEach = {
     reset(mockGameStateService)
+    reset(mockGuesstimaters)
+
+    when(mockGuesstimaters.get).thenReturn(List(
+      fakeRockGuesstimater,
+      fakePaperGuesstimater,
+      fakeScissorsGuesstimater
+    ))
   }
 
   "updateCurrentGuesstimater" should {

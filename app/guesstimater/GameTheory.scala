@@ -1,9 +1,13 @@
 package guesstimater
 
+import com.google.inject.{ImplementedBy, Inject}
 import models.{Move, Play, Result}
+import services.GameStateService
 
-trait GameTheory {
-  val randomPick: Random
+@ImplementedBy(classOf[CGameTheory])
+trait GameTheory extends Guesstimater
+
+class CGameTheory @Inject() (random: Random, gameState: GameStateService) extends GameTheory {
 
   def predict(play: Play) = {
     if(play.result.contains(Result.LOSE)) {
@@ -17,6 +21,10 @@ trait GameTheory {
       else if(play.ourMove == Move.WATERBOMB) Move.DYNAMITE
       else Move.SCISSORS
     }
-    else randomPick.predict
+    else random.getGuess
+  }
+
+  def getGuess = {
+    predict(gameState.getLastPlay())
   }
 }
