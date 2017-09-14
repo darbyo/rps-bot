@@ -3,7 +3,7 @@ package services
 import com.google.inject.{ImplementedBy, Inject}
 import models.{GameState, Play, Result}
 import models.Move.Move
-import play.api.cache.CacheApi
+import play.api.cache.SyncCacheApi
 
 
 @ImplementedBy(classOf[CGameStateService])
@@ -21,7 +21,7 @@ trait GameStateService {
   def getPlays(): List[Play]
 }
 
-class CGameStateService @Inject() (cacheApi: CacheApi) extends GameStateService {
+class CGameStateService @Inject() (cacheApi: SyncCacheApi) extends GameStateService {
   def saveState(gameState: GameState) = cacheApi.set(GameState.key, gameState)
   def getState() = cacheApi.get[GameState](GameState.key) match {
     case Some(gs) => gs

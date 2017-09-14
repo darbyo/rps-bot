@@ -16,6 +16,7 @@ class MoveController @Inject() (
 ) extends Controller {
 
   def move() = Action {
+    println("here")
     Ok(Json.toJson(guesstimaterService.getGuess))
   }
 

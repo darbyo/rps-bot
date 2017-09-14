@@ -11,6 +11,7 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.libs.json.Json
+import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{GameStateService, GuesstimaterService}
@@ -21,6 +22,7 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
 
   val mockGameStateService = mock[GameStateService]
   val mockGuesstimaterService = mock[GuesstimaterService]
+
   def controller = new MoveController(mockGameStateService, mockGuesstimaterService)
 
   override def beforeEach = {

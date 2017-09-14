@@ -7,11 +7,11 @@ import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, WordSpec}
 import org.scalatest.Matchers._
-import play.api.cache.CacheApi
+import play.api.cache.SyncCacheApi
 
 
 class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfterEach {
-  val mockCacheApi = mock[CacheApi]
+  val mockCacheApi = mock[SyncCacheApi]
 
   def serviceUnderTest = new CGameStateService(mockCacheApi)
 
