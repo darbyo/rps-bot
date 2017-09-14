@@ -6,7 +6,7 @@ object RandomNumberGenerator extends RandomNumberGenerator {
   def Next(from: Int, to: Int): Int = {
     require(from < to)
 
-    val diff = from - to
+    val diff = to - from
     Random.nextInt(diff + 1) + from
   }
 }
