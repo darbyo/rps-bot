@@ -29,9 +29,9 @@ class CGameStateService @Inject() (cacheApi: SyncCacheApi) extends GameStateServ
   }
 
   def addOurMove(move: Move): Unit = updateState { gs =>
-    val d = if (move == Move.DYNAMITE) gs.dynamiteCount - 1 else gs.dynamiteCount
+    val dynaCount = if (move == Move.DYNAMITE) gs.dynamiteCount - 1 else gs.dynamiteCount
 
-    gs.copy(plays = Play(move) :: gs.plays, dynamiteCount = d)
+    gs.copy(plays = Play(move) :: gs.plays, dynamiteCount = dynaCount)
   }
 
   def addOpponentMove(move: Move): Unit = updateState { gameState =>

@@ -20,13 +20,14 @@ class MoveController @Inject() (
 
   def move() = Action {
     val ourMove = guesstimaterService.getGuess
-    val o = if(ourMove == Move.DYNAMITE && gameStateService.getState().dynamiteCount == 0) {
+    val actualMove = if(ourMove == Move.DYNAMITE && gameStateService.getState().dynamiteCount == 0) {
       getRandom
     } else {
       ourMove
     }
-    gameStateService.addOurMove(o)
-    Ok(Json.toJson(o))
+
+    gameStateService.addOurMove(actualMove)
+    Ok(Json.toJson(actualMove))
   }
 
   def lastOpponentMove() = Action.async(parse.json) { implicit request =>
