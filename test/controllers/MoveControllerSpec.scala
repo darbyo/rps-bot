@@ -2,7 +2,7 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import models.Move
+import models.{GameState, Move}
 import org.mockito.Matchers.{eq => meq}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -58,6 +58,30 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
 
       contentType(result) mustBe Some("application/json")
       contentAsString(result) mustBe """"PAPER""""
+    }
+
+    """not return dynamite when dynamite count is 0""" in {
+      val gameState = GameState("opponent 1", 1000, 2000, 0)
+      when(mockGameStateService.getState()).thenReturn(gameState)
+      when(mockGuesstimaterService.getGuess).thenReturn(Move.DYNAMITE)
+
+      val request = FakeRequest()
+      val result = call(controller.move(), request)
+
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must not be """"DYNAMITE""""
+    }
+
+    """return dynamite when dynamite count is not 0""" in {
+      val gameState = GameState("opponent 1", 1000, 2000, 1)
+      when(mockGameStateService.getState()).thenReturn(gameState)
+      when(mockGuesstimaterService.getGuess).thenReturn(Move.DYNAMITE)
+
+      val request = FakeRequest()
+      val result = call(controller.move(), request)
+
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) mustBe """"DYNAMITE""""
     }
   }
 

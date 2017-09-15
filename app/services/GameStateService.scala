@@ -1,7 +1,7 @@
 package services
 
 import com.google.inject.{ImplementedBy, Inject}
-import models.{GameState, Play, Result}
+import models.{GameState, Move, Play, Result}
 import models.Move.Move
 import play.api.cache.SyncCacheApi
 
@@ -28,7 +28,11 @@ class CGameStateService @Inject() (cacheApi: SyncCacheApi) extends GameStateServ
     case _ => throw new NoSuchElementException("Game state not in cache")
   }
 
-  def addOurMove(move: Move): Unit = updateState { gs => gs.copy(plays = Play(move) :: gs.plays)}
+  def addOurMove(move: Move): Unit = updateState { gs =>
+    val d = if (move == Move.DYNAMITE) gs.dynamiteCount - 1 else gs.dynamiteCount
+
+    gs.copy(plays = Play(move) :: gs.plays, dynamiteCount = d)
+  }
 
   def addOpponentMove(move: Move): Unit = updateState { gameState =>
     val lastPlay = gameState.plays.head

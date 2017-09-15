@@ -40,6 +40,6 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
   }
 
   private def lostN(gameState: GameState, lastN: Int) = {
-    gameState.plays.drop(gameState.lastUpdateGuesstimater - 1).reverse.take(lastN).count(_.result.contains(Result.LOSE))
+    gameState.plays.drop(gameState.lastUpdateGuesstimater - 1).take(lastN).count(_.result.contains(Result.LOSE))
   }
 }
