@@ -40,4 +40,6 @@ object Logs {
     Files.copy(src.toPath, dest.toPath, StandardCopyOption.REPLACE_EXISTING)
     Files.delete(src.toPath)
   }
+
+  def list = new File("./logs").list.filterNot(_ == "application.log")
 }

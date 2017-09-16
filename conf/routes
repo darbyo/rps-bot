@@ -4,3 +4,6 @@ POST    /move                       controllers.MoveController.lastOpponentMove
 POST    /start                      controllers.StartController.start
 GET     /end                        controllers.StartController.endGame
 
+GET     /logs                       controllers.LogController.list
+GET     /logs/:file                 controllers.LogController.get(file: String)
+
