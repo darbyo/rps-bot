@@ -8,6 +8,7 @@ import services.GameStateService
 trait GameTheory extends Guesstimater
 
 class CGameTheory @Inject() (random: Random, gameState: GameStateService) extends GameTheory {
+  val name = "Game theory"
 
   def predict(play: Play) = {
     if(play.result.contains(Result.LOSE)) {

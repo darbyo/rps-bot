@@ -3,7 +3,8 @@ package services
 import com.google.inject.{ImplementedBy, Inject}
 import guesstimater.Guesstimater
 import models.Move.Move
-import models.{GameState, Move, Result}
+import models.{GameState, Result}
+import play.api.Logger
 
 @ImplementedBy(classOf[CGuesstimaterService])
 trait GuesstimaterService {
@@ -34,6 +35,12 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
   private def updateState(gameState: GameState) = {
     gameStateService.setCurrentGuesstimater(gameState.currentGuesstimater + 1)
     gameStateService.setLastUpdateGuesstimater(gameState.round)
+
+    Logger.logger.info(
+      s"""
+         |Round ${gameState.round}:
+         |  New guesstimater: ${getCurrentGuesstimater(gameState)}
+       """.stripMargin)
   }
 
   private def lostN(gameState: GameState, lastN: Int) =

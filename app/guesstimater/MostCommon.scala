@@ -31,6 +31,7 @@ trait MostCommon extends Guesstimater {
 trait OpponentMostCommon extends MostCommon
 
 class COpponentMostCommon @Inject() (gameState: GameStateService) extends OpponentMostCommon {
+  val name = "Opponent most common"
   def getGuess = predict(gameState.getPlays().filter(_.opponentMove.isDefined).map(_.opponentMove.get))
 }
 
@@ -39,6 +40,7 @@ class COpponentMostCommon @Inject() (gameState: GameStateService) extends Oppone
 trait OpponentLast50MostCommon extends MostCommon
 
 class COpponentLast50MostCommon @Inject() (gameState: GameStateService) extends OpponentLast50MostCommon {
+  val name = "Opponent most common of last 50"
   def getGuess = predict(gameState.getPlays().filter(_.opponentMove.isDefined).take(50).map(_.opponentMove.get))
 }
 
@@ -47,6 +49,7 @@ class COpponentLast50MostCommon @Inject() (gameState: GameStateService) extends 
 trait OpponentLast10MostCommon extends MostCommon
 
 class COpponentLast10MostCommon @Inject() (gameState: GameStateService) extends OpponentLast10MostCommon {
+  val name = "Opponent most common of last 10"
   def getGuess = predict(gameState.getPlays().filter(_.opponentMove.isDefined).take(10).map(_.opponentMove.get))
 }
 
@@ -55,6 +58,7 @@ class COpponentLast10MostCommon @Inject() (gameState: GameStateService) extends 
 trait OurMostCommon extends MostCommon
 
 class COurMostCommon @Inject() (gameState: GameStateService) extends OurMostCommon {
+  val name = "Our most common"
   def getGuess = predict(gameState.getPlays().map(_.ourMove))
 }
 
@@ -63,6 +67,7 @@ class COurMostCommon @Inject() (gameState: GameStateService) extends OurMostComm
 trait OurLast50MostCommon extends MostCommon
 
 class COurLast50MostCommon @Inject() (gameState: GameStateService) extends OurLast50MostCommon {
+  val name = "Our most common of last 50"
   def getGuess = predict(gameState.getPlays().take(50).map(_.ourMove))
 }
 
@@ -71,5 +76,6 @@ class COurLast50MostCommon @Inject() (gameState: GameStateService) extends OurLa
 trait OurLast10MostCommon extends MostCommon
 
 class COurLast10MostCommon @Inject() (gameState: GameStateService) extends OurLast10MostCommon {
+  val name = "Our most common of last 10"
   def getGuess = predict(gameState.getPlays().take(10).map(_.ourMove))
 }

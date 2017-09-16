@@ -8,6 +8,7 @@ import utils.RandomNumberGenerator
 trait Random extends Guesstimater
 
 class CRandom extends Random {
+  val name = "Weighted random"
   val randomNumberGenerator: RandomNumberGenerator = RandomNumberGenerator
 
   def predict = {
