@@ -1,13 +1,12 @@
 package controllers
 
-import java.nio.file.Files.copy
-import java.nio.file.Paths.get
-import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 import javax.inject.Inject
 
-import play.api.Logger
+import models.GameState
+import org.joda.time.Instant
 import play.api.mvc.{Action, Controller}
 import services.GameStateService
+import utils.Logs
 import viewmodels.GameStateViewModel
 
 import scala.concurrent.Future
@@ -17,16 +16,11 @@ class StartController @Inject()(gameStateService: GameStateService) extends Cont
   def start() = Action.async(parse.json) { implicit request =>
     Try(request.body.as[GameStateViewModel]) match {
       case Success(m) => {
-        Logger.info(
-          s"""
-             |Begin new game:
-             |  Opponent: ${m.opponentName}
-             |  MaxRounds: ${m.maxRounds}
-             |  PointsToWin: ${m.pointsToWin}
-             |  DynamiteCount: ${m.dynamiteCount}
-          """.stripMargin)
+        val gameState = GameStateViewModel.asGameState(m)
 
-        gameStateService.saveState(GameStateViewModel.asGameState(m))
+        gameStateService.saveState(gameState)
+        Logs.startGame(gameState)
+
         Future.successful(Ok)
       }
       case Failure(_) => Future.successful(BadRequest("Unable to parse request body"))
@@ -34,12 +28,13 @@ class StartController @Inject()(gameStateService: GameStateService) extends Cont
   }
 
   def endGame() = Action { implicit request =>
-    Logger.info(
-      s"""
-         |Game end:
-         |  ${gameStateService.getState()}
-         """.stripMargin)
+    val gameState = gameStateService.getState()
 
-    Ok()
+    Logs.endGame(gameState)
+    Logs.archive(archiveName(gameState))
+
+    Ok("Game ended - logs archived")
   }
+
+  private def archiveName(gameState: GameState) = s"${gameState.opponentName}-${Instant.now.getMillis}"
 }

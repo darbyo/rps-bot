@@ -5,6 +5,7 @@ import guesstimater.Guesstimater
 import models.Move.Move
 import models.{GameState, Result}
 import play.api.Logger
+import utils.Logs
 
 @ImplementedBy(classOf[CGuesstimaterService])
 trait GuesstimaterService {
@@ -23,8 +24,8 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
     checkForLosingAll(gameState)
   }
 
-  def getCurrentGuesstimater(gameState: GameState) =
-    guesstimaters(gameState.currentGuesstimater % guesstimaters.length)
+  def getCurrentGuesstimater(gameState: GameState) = getGuesstimater(gameState.currentGuesstimater)
+  private def getGuesstimater(index: Int) = guesstimaters(index % guesstimaters.length)
 
   def getGuess: Move = getCurrentGuesstimater(gameStateService.getState()).getGuess
 
@@ -36,11 +37,11 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
     gameStateService.setCurrentGuesstimater(gameState.currentGuesstimater + 1)
     gameStateService.setLastUpdateGuesstimater(gameState.round)
 
-    Logger.info(
-      s"""
-         |Round ${gameState.round}:
-         |  New guesstimater: ${getCurrentGuesstimater(gameState)}
-       """.stripMargin)
+    Logs.guesstimaterUpdated(
+      gameState,
+      getGuesstimater(gameState.currentGuesstimater),
+      getGuesstimater(gameState.currentGuesstimater + 1)
+    )
   }
 
   private def lostN(gameState: GameState, lastN: Int) =
