@@ -19,6 +19,8 @@ trait GameStateService {
 
   def getLastPlay(): Play
   def getPlays(): List[Play]
+
+  def hasDynamite: Boolean
 }
 
 class CGameStateService @Inject() (cacheApi: SyncCacheApi) extends GameStateService {
@@ -56,6 +58,8 @@ class CGameStateService @Inject() (cacheApi: SyncCacheApi) extends GameStateServ
     }
 
   def getPlays(): List[Play] = getState().plays
+
+  def hasDynamite: Boolean = getState().dynamiteCount > 0
 
   private def updateState(fn: GameState => GameState) = {
     val gameState = getState()

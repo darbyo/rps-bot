@@ -60,9 +60,8 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
       contentAsString(result) mustBe """"PAPER""""
     }
 
-    """not return dynamite when dynamite count is 0""" in {
-      val gameState = GameState("opponent 1", 1000, 2000, 0)
-      when(mockGameStateService.getState()).thenReturn(gameState)
+    """not return dynamite when no dynamite left""" in {
+      when(mockGameStateService.hasDynamite).thenReturn(false)
       when(mockGuesstimaterService.getGuess).thenReturn(Move.DYNAMITE)
 
       val request = FakeRequest()
@@ -72,9 +71,8 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
       contentAsString(result) must not be """"DYNAMITE""""
     }
 
-    """return dynamite when dynamite count is not 0""" in {
-      val gameState = GameState("opponent 1", 1000, 2000, 1)
-      when(mockGameStateService.getState()).thenReturn(gameState)
+    """return dynamite when there is dynamite""" in {
+      when(mockGameStateService.hasDynamite).thenReturn(true)
       when(mockGuesstimaterService.getGuess).thenReturn(Move.DYNAMITE)
 
       val request = FakeRequest()

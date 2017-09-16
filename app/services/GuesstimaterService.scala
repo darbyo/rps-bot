@@ -19,10 +19,7 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
 
   def updateCurrentGuesstimater(): Unit = {
     val gameState = gameStateService.getState()
-
     checkForLosingAll(gameState)
-    checkForLosingMost(gameState)
-    checkForDraws(gameState)
   }
 
   def getCurrentGuesstimater(gameState: GameState) =
@@ -30,8 +27,8 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
 
   def getGuess: Move = getCurrentGuesstimater(gameStateService.getState()).getGuess
 
-  private def checkForLosingAll(gameState: GameState) = if(lostN(gameState, 5) == 5) updateState(gameState)
-  private def checkForLosingMost(gameState: GameState) = if(lostN(gameState, 10) == 6) updateState(gameState)
+  private def checkForLosingAll(gameState: GameState) = if(lostN(gameState, 5) == 5) updateState(gameState) else checkForLosingMost(gameState)
+  private def checkForLosingMost(gameState: GameState) = if(lostN(gameState, 10) == 6) updateState(gameState) else checkForDraws(gameState)
   private def checkForDraws(gameState: GameState) = if(lostN(gameState, 14) == 7) updateState(gameState)
 
   private def updateState(gameState: GameState) = {
@@ -39,7 +36,10 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
     gameStateService.setLastUpdateGuesstimater(gameState.round)
   }
 
-  private def lostN(gameState: GameState, lastN: Int) = {
-    gameState.plays.drop(gameState.lastUpdateGuesstimater - 1).take(lastN).count(_.result.contains(Result.LOSE))
-  }
+  private def lostN(gameState: GameState, lastN: Int) =
+    gameState
+      .plays
+      .drop(gameState.lastUpdateGuesstimater - 1)
+      .take(lastN)
+      .count(_.result.contains(Result.LOSE))
 }

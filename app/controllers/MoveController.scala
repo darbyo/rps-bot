@@ -16,18 +16,16 @@ class MoveController @Inject() (
   guesstimaterService: GuesstimaterService
 ) extends Controller {
 
-  def getRandom = Random.shuffle(List(Move.ROCK, Move.PAPER, Move.SCISSORS)).head
+  private def getRandom = Random.shuffle(List(Move.ROCK, Move.PAPER, Move.SCISSORS)).head
+  private def getNextMove = guesstimaterService.getGuess match {
+    case Move.DYNAMITE if !gameStateService.hasDynamite => getRandom
+    case x => x
+  }
 
   def move() = Action {
-    val ourMove = guesstimaterService.getGuess
-    val actualMove = if(ourMove == Move.DYNAMITE && gameStateService.getState().dynamiteCount == 0) {
-      getRandom
-    } else {
-      ourMove
-    }
-
-    gameStateService.addOurMove(actualMove)
-    Ok(Json.toJson(actualMove))
+    val nextMove = getNextMove
+    gameStateService.addOurMove(nextMove)
+    Ok(Json.toJson(nextMove))
   }
 
   def lastOpponentMove() = Action.async(parse.json) { implicit request =>

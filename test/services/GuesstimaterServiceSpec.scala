@@ -196,7 +196,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "6 out of 10 losses" in {
         val plays = getLosses(6) ++ getWins(4)
-        val gameState = getGameState(0, 2, 10, plays)
+        val gameState = getGameState(0, 3, 10, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -206,7 +206,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "7 losses out of 14" in {
         val plays = getLosses(7) ++ getWins(7)
-        val gameState = getGameState(0, 2, 14, plays)
+        val gameState = getGameState(0, 4, 14, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()

@@ -296,4 +296,30 @@ class GameStateServiceSpec extends WordSpec with MockitoSugar with BeforeAndAfte
       }
     }
   }
+
+  "hasDynamite" should {
+    "return true when dynamite count is 1" in {
+      val gameState = GameState("opponent 1", 500, 1000, 1)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      val result = serviceUnderTest.hasDynamite
+      result shouldBe true
+    }
+
+    "return false when dynamite count is 0" in {
+      val gameState = GameState("opponent 1", 500, 1000, 0)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      val result = serviceUnderTest.hasDynamite
+      result shouldBe false
+    }
+
+    "return false when dynamite count is -1" in {
+      val gameState = GameState("opponent 1", 500, 1000, -1)
+      when(mockCacheApi.get[GameState](meq(GameState.key))(any())).thenReturn(Some(gameState))
+
+      val result = serviceUnderTest.hasDynamite
+      result shouldBe false
+    }
+  }
 }
