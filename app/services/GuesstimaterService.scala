@@ -36,7 +36,7 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
     gameStateService.setCurrentGuesstimater(gameState.currentGuesstimater + 1)
     gameStateService.setLastUpdateGuesstimater(gameState.round)
 
-    Logger.logger.info(
+    Logger.info(
       s"""
          |Round ${gameState.round}:
          |  New guesstimater: ${getCurrentGuesstimater(gameState)}

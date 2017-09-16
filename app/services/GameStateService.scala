@@ -22,8 +22,6 @@ trait GameStateService {
   def getPlays(): List[Play]
 
   def hasDynamite: Boolean
-
-  def logIfGameEnd(): Unit
 }
 
 class CGameStateService @Inject() (cacheApi: SyncCacheApi) extends GameStateService {
@@ -63,21 +61,6 @@ class CGameStateService @Inject() (cacheApi: SyncCacheApi) extends GameStateServ
   def getPlays(): List[Play] = getState().plays
 
   def hasDynamite: Boolean = getState().dynamiteCount > 0
-
-  def logIfGameEnd(): Unit = {
-    val gameState = getState()
-    val wins = gameState.plays.count(_.result.getOrElse(Result.LOSE) == Result.WIN)
-    val losses = gameState.plays.count(_.result.getOrElse(Result.WIN) == Result.LOSE)
-    val total = gameState.plays.length
-
-    if (wins >= gameState.pointsToWin || losses >= gameState.pointsToWin || total >= gameState.maxRounds) {
-      Logger.logger.info(
-        s"""
-           |Game end:
-           |  ${gameState}
-         """.stripMargin)
-    }
-  }
 
   private def updateState(fn: GameState => GameState) = {
     val gameState = getState()

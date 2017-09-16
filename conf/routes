@@ -2,4 +2,5 @@ GET     /move                       controllers.MoveController.move
 POST    /move                       controllers.MoveController.lastOpponentMove
 
 POST    /start                      controllers.StartController.start
+GET     /end                        controllers.StartController.endGame
 
