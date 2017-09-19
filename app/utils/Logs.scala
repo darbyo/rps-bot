@@ -41,5 +41,5 @@ object Logs {
     Files.delete(src.toPath)
   }
 
-  def list = new File("./logs").list.filterNot(_ == "application.log")
+  def list = new File("./logs").list
 }
