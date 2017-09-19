@@ -5,7 +5,7 @@ import models.Result.Result
 import play.api.libs.json.Json
 
 case class Play(ourMove: Move, opponentMove: Option[Move] = None, result: Option[Result] = None) {
-  override def toString: String = s"($ourMove :: $opponentMove :: $result)"
+  override def toString: String = s"($ourMove :: ${opponentMove.getOrElse("None")} :: ${result.getOrElse("None")})"
 }
 
 object Play {

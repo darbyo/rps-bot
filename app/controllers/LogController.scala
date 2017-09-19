@@ -19,7 +19,7 @@ class LogController @Inject() (implicit fileMimeTypes: FileMimeTypes) extends Co
     Ok.sendFile(new File(s"./logs/$name"), inline = true)
       .withHeaders(
         CACHE_CONTROL -> "max-age=3600",
-        CONTENT_DISPOSITION -> "attachment; filename=abc.csv",
+        CONTENT_DISPOSITION -> s"attachment; filename=$name",
         CONTENT_TYPE -> "application/x-download"
       )
   }
