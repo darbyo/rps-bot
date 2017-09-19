@@ -1,3 +1,8 @@
+# archive
+archive-logs/*
+!archive-logs/.gitkeep
+
+# standard scala ignores
 .g8
 logs
 target

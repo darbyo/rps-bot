@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class LogController @Inject() (implicit fileMimeTypes: FileMimeTypes) extends Controller {
   def list = Action {
-    Ok(Json.toJson(Logs.list))
+    Ok(new File("./logs/application.log").toPath)
   }
 
   def get(name: String) = Action {
