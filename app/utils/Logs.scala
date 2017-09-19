@@ -34,12 +34,12 @@ object Logs {
        """.stripMargin)
 
   def archive(archiveName: String) = {
-    val src = new File("./logs/application.log")
-    val dest = new File(s"./logs/$archiveName.log")
+    val src = new File("/app/logs/application.log")
+    val dest = new File(s"/app/logs/$archiveName.log")
 
     Files.copy(src.toPath, dest.toPath, StandardCopyOption.REPLACE_EXISTING)
     Files.delete(src.toPath)
   }
 
-  def list = new File("./logs").list.filterNot(_ == ".gitkeep")
+  def list = new File("/app/logs").list.filterNot(_ == ".gitkeep")
 }

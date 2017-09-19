@@ -12,11 +12,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class LogController @Inject() (implicit fileMimeTypes: FileMimeTypes) extends Controller {
   def list = Action {
-    Ok(new File("./logs/application.log").toPath.toAbsolutePath.toString)
+    Ok(Json.toJson(Logs.list))
   }
 
   def get(name: String) = Action {
-    Ok.sendFile(new File(s"./logs/$name"), inline = true)
+    Ok.sendFile(new File(s"/app/logs/$name"), inline = true)
       .withHeaders(
         CACHE_CONTROL -> "max-age=3600",
         CONTENT_DISPOSITION -> s"attachment; filename=$name",
