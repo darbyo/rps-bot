@@ -1,10 +1,9 @@
 # archive
-archive-logs/*
-!archive-logs/.gitkeep
+logs/*
+!logs/.gitkeep
 
 # standard scala ignores
 .g8
-logs
 target
 /.ensime
 /.ensime_cache
