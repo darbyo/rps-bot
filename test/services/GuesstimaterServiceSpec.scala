@@ -61,7 +61,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
   "updateCurrentGuesstimater" should {
     "increment currentGuesstimater to 1" when {
       "last 5 plays are losses" in {
-        val gameState = getGameState(0, 1, 5, getLosses(5))
+        val gameState = getGameState(0, 0, 5, getLosses(5))
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -71,7 +71,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "6 out of 10 last plays are losses" in {
         val plays = getLosses(6) ++ getWins(4)
-        val gameState = getGameState(0, 1, 10, plays)
+        val gameState = getGameState(0, 0, 10, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -81,7 +81,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "7 out of 14 last plays are losses" in {
         val plays = getLosses(7) ++ getWins(7)
-        val gameState = getGameState(0, 1, 14, plays)
+        val gameState = getGameState(0, 0, 14, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -92,7 +92,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
     "increment currentGuesstimater to 2" when {
       "last 5 plays are losses" in {
-        val gameState = getGameState(1, 1, 5, getLosses(5))
+        val gameState = getGameState(1, 0, 5, getLosses(5))
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -102,7 +102,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "6 out of 10 last plays are losses" in {
         val plays = getLosses(6) ++ getWins(4)
-        val gameState = getGameState(1, 1, 10, plays)
+        val gameState = getGameState(1, 0, 10, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -112,7 +112,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "7 out of 14 last plays are losses" in {
         val plays = getLosses(7) ++ getWins(7)
-        val gameState = getGameState(1, 1, 14, plays)
+        val gameState = getGameState(1, 0, 14, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -123,7 +123,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
     "set lastUpdateGuesstimater to round number" when {
       "last 5 plays are losses" in {
-        val gameState = getGameState(1, 1, 5, getLosses(5))
+        val gameState = getGameState(1, 0, 5, getLosses(5))
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -133,7 +133,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "6 out of 10 last plays are losses" in {
         val plays = getLosses(6) ++ getWins(4)
-        val gameState = getGameState(1, 1, 10, plays)
+        val gameState = getGameState(1, 0, 10, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -143,7 +143,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "7 out of 14 last plays are losses" in {
         val plays = getLosses(7) ++ getWins(7)
-        val gameState = getGameState(1, 1, 14, plays)
+        val gameState = getGameState(1, 0, 14, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -155,7 +155,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
     "do not update currentGuesstimater" when {
       "1 out of 5 last plays are wins" in {
         val plays = getPlay(Result.WIN) +: getLosses(4)
-        val gameState = getGameState(0, 1, 5, plays)
+        val gameState = getGameState(0, 0, 5, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -165,7 +165,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "has 5 losses but not in a row" in {
         val plays = getLosses(2) ++ getWins(1) ++ getLosses(3)
-        val gameState = getGameState(0, 1, 6, plays)
+        val gameState = getGameState(0, 0, 6, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -175,7 +175,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "has 6 losses out 12 not in a row" in {
         val plays = getLosses(2) ++ getWins(6) ++ getLosses(4)
-        val gameState = getGameState(0, 1, 12, plays)
+        val gameState = getGameState(0, 0, 12, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -185,7 +185,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
       "has 7 losses out of 16 not in a row" in {
         val plays = getLosses(3) ++ getWins(9) ++ getLosses(4)
-        val gameState = getGameState(0, 1, 16, plays)
+        val gameState = getGameState(0, 0, 16, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -197,7 +197,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
     "only check values since last round update" when {
       "5 loses in a row" in {
         val plays = getLosses(5)
-        val gameState = getGameState(0, 2, 5, plays)
+        val gameState = getGameState(0, 1, 5, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -206,8 +206,8 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
       }
 
       "6 out of 10 losses" in {
-        val plays = getLosses(6) ++ getWins(4)
-        val gameState = getGameState(0, 3, 10, plays)
+        val plays = getWins(4) ++ getLosses(6)
+        val gameState = getGameState(0, 2, 10, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -216,8 +216,8 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
       }
 
       "7 losses out of 14" in {
-        val plays = getLosses(7) ++ getWins(7)
-        val gameState = getGameState(0, 4, 14, plays)
+        val plays = getWins(7) ++ getLosses(7)
+        val gameState = getGameState(0, 3, 14, plays)
         when(mockGameStateService.getState()).thenReturn(gameState)
 
         serviceUnderTest.updateCurrentGuesstimater()
@@ -230,7 +230,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
   "getCurrentGuesstimater" should {
     "return fakeRockGuesstimater" when {
       "currentGuesstimater is 0" in {
-        val gameState = getGameState(0, 1, 0, Nil)
+        val gameState = getGameState(0, 0, 0, Nil)
 
         val result = serviceUnderTest.getCurrentGuesstimater(gameState)
 
@@ -240,7 +240,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
     "return fakePaperGuesstimater" when {
       "currentGuesstimater is 1" in {
-        val gameState = getGameState(1, 1, 0, Nil)
+        val gameState = getGameState(1, 0, 0, Nil)
 
         val result = serviceUnderTest.getCurrentGuesstimater(gameState)
 
@@ -250,7 +250,7 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
 
     "return fakeScissorsGuesstimater" when {
       "currentGuesstimater is 5" in {
-        val gameState = getGameState(5, 1, 0, Nil)
+        val gameState = getGameState(5, 0, 0, Nil)
 
         val result = serviceUnderTest.getCurrentGuesstimater(gameState)
 

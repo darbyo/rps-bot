@@ -23,13 +23,10 @@ class CGuesstimaters @Inject() (
     random,
     opponentMostCommon,
     gameTheory,
-    ourMostCommon,
     random,
     opponentLast10MostCommon,
     gameTheoryDefence,
-    ourLast10MostCommon,
     random,
     opponentLast50MostCommon,
-    ourLast50MostCommon
   )
 }
