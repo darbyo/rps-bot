@@ -85,7 +85,7 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
 
   "lastOpponentMove" must {
     "return 200 for a POST" in {
-      val json = """{"lastOpponentMove": "PAPER"}"""
+      val json = """{"opponentLastMove": "PAPER"}"""
       val request = FakeRequest().withJsonBody(Json.parse(json))
       val result = call(controller.lastOpponentMove(), request)
 
@@ -93,7 +93,7 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
     }
 
     "add last opponent move to game state - test 1" in {
-      val json = """{"lastOpponentMove": "PAPER"}"""
+      val json = """{"opponentLastMove": "PAPER"}"""
       val request = FakeRequest().withJsonBody(Json.parse(json))
 
       await(call(controller.lastOpponentMove(), request))
@@ -102,7 +102,7 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
     }
 
     "add last opponent move to game state - test 2" in {
-      val json = """{"lastOpponentMove": "ROCK"}"""
+      val json = """{"opponentLastMove": "ROCK"}"""
       val request = FakeRequest().withJsonBody(Json.parse(json))
 
       await(call(controller.lastOpponentMove(), request))
@@ -120,7 +120,7 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
     }
 
     "return 400 when an invalid value is passed" in {
-      val json = """{"lastOpponentMove":"PPER"}"""
+      val json = """{"opponentLastMove":"PPER"}"""
       val request = FakeRequest().withJsonBody(Json.parse(json))
 
       val result = call(controller.lastOpponentMove(), request)
@@ -131,7 +131,7 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
     "return 400 when game state service throws an exception" in {
       when(mockGameStateService.addOpponentMove(any())).thenThrow(new NoSuchElementException())
 
-      val json = """{"lastOpponentMove": "PAPER"}"""
+      val json = """{"opponentLastMove": "PAPER"}"""
       val request = FakeRequest().withJsonBody(Json.parse(json))
 
       val result = call(controller.lastOpponentMove(), request)
@@ -140,7 +140,7 @@ class MoveControllerSpec extends PlaySpec with GuiceOneAppPerTest with MockitoSu
     }
 
     "call updateCurrentGuesstimater" in {
-      val json = """{"lastOpponentMove": "PAPER"}"""
+      val json = """{"opponentLastMove": "PAPER"}"""
       val request = FakeRequest().withJsonBody(Json.parse(json))
 
       await(call(controller.lastOpponentMove(), request))

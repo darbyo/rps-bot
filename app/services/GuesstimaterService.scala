@@ -47,7 +47,8 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
   private def lostN(gameState: GameState, lastN: Int) =
     gameState
       .plays
-      .drop(gameState.lastUpdateGuesstimater - 1)
-      .take(lastN)
+      .take(takeLower(lastN, gameState.round - gameState.lastUpdateGuesstimater))
       .count(_.result.contains(Result.LOSE))
+
+  private def takeLower(x: Int, y: Int): Int = if (x < y) x else y
 }
