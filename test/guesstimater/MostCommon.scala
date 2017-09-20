@@ -5,7 +5,10 @@ import org.scalatest.WordSpec
 import org.scalatest.Matchers._
 
 class MostCommonSpec extends WordSpec {
-  def objectUnderTest = new MostCommon { def getGuess = ??? }
+  def objectUnderTest = new MostCommon {
+    val name = ""
+    def getGuess = ???
+  }
 
   "predict method" should {
     "return scissors" when {

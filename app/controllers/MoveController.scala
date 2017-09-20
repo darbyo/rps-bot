@@ -32,7 +32,7 @@ class MoveController @Inject() (
     Try(request.body.as[OpponentMove]) match {
       case Success(m) => {
         try {
-          gameStateService.addOpponentMove(m.lastOpponentMove)
+          gameStateService.addOpponentMove(m.opponentLastMove)
           guesstimaterService.updateCurrentGuesstimater()
 
           Future.successful(Ok)

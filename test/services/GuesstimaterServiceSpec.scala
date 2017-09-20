@@ -16,9 +16,20 @@ class GuesstimaterServiceSpec extends WordSpec with MockitoSugar with BeforeAndA
   val mockGameStateService = mock[GameStateService]
   val mockGuesstimaters = mock[Guesstimaters]
 
-  val fakeRockGuesstimater = new Guesstimater { def getGuess: Move = Move.ROCK }
-  val fakePaperGuesstimater = new Guesstimater { def getGuess: Move = Move.PAPER }
-  val fakeScissorsGuesstimater = new Guesstimater { def getGuess: Move = Move.SCISSORS }
+  val fakeRockGuesstimater = new Guesstimater {
+    val name = ""
+    def getGuess: Move = Move.ROCK
+  }
+
+  val fakePaperGuesstimater = new Guesstimater {
+    val name = ""
+    def getGuess: Move = Move.PAPER
+  }
+
+  val fakeScissorsGuesstimater = new Guesstimater {
+    val name = ""
+    def getGuess: Move = Move.SCISSORS
+  }
 
   def serviceUnderTest = new CGuesstimaterService(mockGameStateService, mockGuesstimaters)
 
