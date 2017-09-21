@@ -46,6 +46,8 @@ class CGameStateService @Inject() (cacheApi: SyncCacheApi) extends GameStateServ
     val newPlay = Play(lastPlay.ourMove, Some(move), Some(Result.fromPlay(lastPlay.ourMove, move)))
     val round = gameState.round + 1
 
+    Logger.info(s"Begin round: $round")
+
     gameState.copy(round = round, plays = newPlay :: gameState.plays.tail)
   }
 

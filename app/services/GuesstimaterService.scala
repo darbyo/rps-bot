@@ -4,7 +4,6 @@ import com.google.inject.{ImplementedBy, Inject}
 import guesstimater.Guesstimater
 import models.Move.Move
 import models.{GameState, Result}
-import play.api.Logger
 import utils.Logs
 
 @ImplementedBy(classOf[CGuesstimaterService])
@@ -21,9 +20,6 @@ class CGuesstimaterService @Inject() (gameStateService: GameStateService, gs: Gu
 
   def updateCurrentGuesstimater(): Unit = {
     val gameState = gameStateService.getState()
-
-    println(lostN(gameState, 5))
-
     checkForLosingAll(gameState)
   }
 
