@@ -33,14 +33,12 @@ class MoveController @Inject() (
   }
 
   def lastOpponentMove() = Action.async(parse.json) { implicit request =>
-    Logger.info(request.body.toString)
-
     Try(request.body.as[OpponentMove]) match {
       case Success(m) => {
         try {
           Logger.info(s"Opp Move: ${m.opponentLastMove}")
 
-          gameStateService.addOpponentMove(m.opponentLastMove)
+          gameStateService.addOpponentMove(Move.withName(m.opponentLastMove.replace("\"", "")))
           guesstimaterService.updateCurrentGuesstimater()
 
           Future.successful(Ok)
